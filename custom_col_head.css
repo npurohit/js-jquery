@@ -1,0 +1,40 @@
+/* Custom CSS for Datatable hide/show columns  
+ ** add this to custom view template file created for style
+ */
+
+#col_head {
+    list-style: none;
+}
+#col_head:after {
+    clear: both;
+}
+ul#col_head  {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+ul#col_head li {
+    height: 25px;
+    float: left;
+    margin-right: 0px;
+    border-right: 1px solid #aaa;
+    padding: 0 20px;
+}
+ul#col_head li:last-child {
+    border: none;
+    }
+li a {
+    text-decoration: none;
+    color: #333;
+    display: block;
+    min-width: 100px;
+    font-size: 16px;
+	font-weight: bold;
+}
+
+ul#col_head li a:hover {
+    color: #666;
+}
+ul#col_head li.active a {
+    color: #ccc;
+}
