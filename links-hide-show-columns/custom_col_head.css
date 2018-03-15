@@ -1,4 +1,4 @@
-/* Custom CSS for Datatable hide/show columns  
+/* Custom CSS for Datatable1.9.0 hide/show columns using ul-li for drupal datatable view 
  ** add this to custom view template file created for style
  */
 
@@ -7,7 +7,8 @@
 }
 #col_head:after {
     clear: both;
-}
+
+	}
 ul#col_head  {
     list-style-type: none;
     margin: 0;
@@ -23,7 +24,7 @@ ul#col_head li {
 ul#col_head li:last-child {
     border: none;
     }
-li a {
+#col_head li a {
     text-decoration: none;
     color: #333;
     display: block;

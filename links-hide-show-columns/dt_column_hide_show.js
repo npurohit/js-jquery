@@ -1,4 +1,6 @@
-
+/* DataTables-V1.9.0 JS using UL-Li Hide-Show Table columns dynamically using 
+ * Drupal View Datatable, required custom js below and css to incorporate to drupal using custom theme
+ */
 (function ($) { //alert('working $');
 	Drupal.behaviors.customDatatable = {  attach: function (context, settings) { alert('working behaviors');
 	/*Datatables*/

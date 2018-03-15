@@ -1,0 +1,59 @@
+/* Custom CSS for Datatable hide/show columns using checkbox for drupal datatable view  */
+.show_hide_options {
+	border: 1px solid #ccc;
+	overflow: auto;
+	padding: 10px;
+	width: 100%;margin-top: 10px;
+}
+label#check_all_label {
+	font-size: 16px;
+	margin-bottom: 10px;
+}
+ul#col_head {
+    list-style: none;
+}
+#col_head:after {
+    clear: both;
+}
+            
+ul#col_head  {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+ul#col_head li {                
+    height: 25px;
+	float: left;
+	margin-right: 0px;
+	border-right: 1px solid #aaa;
+	padding: 0 10px;
+	margin-left: 0px;
+	line-height: normal;
+}
+
+ul#col_head li:last-child {
+    border: none;
+}
+
+ul#col_head li label.tgl-class {
+    text-decoration: none;
+    color: #333;
+    display: inline-block;
+    min-width: 100px;
+    font-size: 16px;
+	font-weight: bold;
+	vertical-align: middle;
+}
+ul#col_head li input.toggle-vis {                
+    color: #333;
+    display: inline-block;
+    vertical-align: middle;
+}
+ul#col_head li label:hover {
+    color: #666;
+}
+
+ul#col_head li.active label {             
+    color: #ccc;
+}
