@@ -1,0 +1,152 @@
+(function ($) {
+    $(document).ready(function ($) {
+        var selector = '#1';
+        var datatable = $(selector).DataTable({
+            //$('table.views-table').DataTable({
+            responsive: false,
+            paging: false,
+            fixedHeader: true,
+            "order": [[1, "asc"]],
+            "columnDefs": [
+                { "type": "natural-nohtml", targets: 1 },
+                { "type": "natural-nohtml", targets: 0 }
+            ],
+            "scrollY": false,
+            "scrollX": false,
+            "dom": 'Bfrtip',
+            "bJQueryUI": true,
+            buttons: [
+                'copyHtml5',
+                'excelHtml5',
+                'csvHtml5',
+                'pdfHtml5',
+                'print',
+            ],
+
+            initComplete: function () { 
+                getCustomFilter(selector);
+                var _ulSel = $('ul'+selector+'-select_head');
+                this.api().columns().every(function () {
+                    var column = this;
+                    var str = $(column.header()).text();
+                    str = str.replace(/ /g, '');
+                    str = cusTrim(str);
+                  //  if (str != 'Provision or Clause' && str != 'Prescribed in') {
+                  if(column.index() !='0' && column.index()!='1' && column.index() != '2'){
+						var _liSel = $('<li/>').addClass('li-item').appendTo(_ulSel);
+                        var select = $('<select><option value="">' + str + '</option></select>')
+                            .appendTo(_liSel)
+                            .on('change', function () {
+                                var val = $.fn.dataTable.util.escapeRegex(
+                                    $(this).val()
+                                );
+                                column.search(val ? '^' + val + '$' : '', true, false).draw();
+                            });
+							select.attr('id','sel-'+column.index());
+                        column.data().unique().sort().each(function (d, j) {
+                            if (str == 'Provision or Clause' || str == 'Prescribed in' || str == 'PorC') {
+                                d = getTextFromHyperlink(d);console.log(d);
+                            }
+                            select.append('<option value="' + d + '">' + d + '</option>')
+                        });
+                    } 
+                });
+            }
+        });
+
+        function getTextFromHyperlink(linkText) {
+            return linkText.match(/<a [^>]+>([^<]+)<\/a>/)[1];
+        }
+
+        function cusTrim(x) {
+            return x.replace(/^\s+|\s+$/gm, '');
+        }
+        //   new $.fn.dataTable.FixedHeader(datatable);
+
+        //  $('#edit-field-field-1-value-wrapper').detach().appendTo('th.views-field-field-field-1');
+        //   $('th.views-field-field-field-1 < a').empty();
+
+        /* Custom JS Show-Hide Feature for DataTable Clause Matrix View */
+        function getCustomFilter(selector) {
+         
+        
+        var hidden = [];
+        var visible = [];
+        //var hidden= [ 2,3,4,5,6,7,8,9,10,11,1,2,13,14,20,25,27,30,32 ];
+
+        var head = Array();
+        $(selector + ' thead tr.thead th').each(function (i) {
+            var str = $(this).text();
+            head[i] = str.trim();
+            visible.push(i);
+        });
+        var colList = $('ul' + selector + '-col_head');
+
+        for (var i = 3; i < head.length; i++) {
+            var _li = $('<li/>').addClass('li-item');
+            var is_checked = false;
+            if (visible.indexOf(i)) {
+                //_li.addClass('active');
+                is_checked = true;
+            }
+            _li.appendTo(colList);
+            //var _a = $('<a/>').attr('href', "javascript:void(0);").attr('data-column', i).addClass('toggle-vis').text(head[i]).appendTo(_li);
+            var _checkbox = $('<input />').attr('type', 'checkbox').attr('id', 'cb' + i).attr('name', 'selected[]').addClass('toggle-vis').attr('checked', is_checked).attr('data-selector', selector).val(i).appendTo(_li);
+            var _checkbox_label = $('<label />').attr('for', 'cb' + i).attr('class', 'tgl-class').text(head[i]).appendTo(_li);
+        }
+        }
+        $(selector + 'check_all').on('change', function (e) {
+            var _selector = $(this).val();
+            var colList = $('ul' + selector + '-col_head');
+            $('label' + _selector + 'check_all_label span').text(this.checked ? 'Hide All' : 'Show All');
+            colList.find('input[name*=\'selected\']').prop('checked', this.checked);
+            colList.find('input[name*=\'selected\']').each(function (i) {
+                var iCol = $(this).val();
+                //var bVis = datatable.fnSettings().aoColumns[iCol].bVisible;
+                var bVis = datatable.column(iCol);
+                if ($(_selector + 'check_all').prop('checked') == false) {
+                    $(this).parent('li').addClass('active');
+                    //datatable.fnSetColumnVis( iCol,false );
+                    bVis.visible(false);
+					$('ul'+selector+'-select_head').find('select#sel-'+iCol).hide();
+                } else {
+                    $(this).parent('li').removeClass('active');
+                    //datatable.fnSetColumnVis( iCol, true );	
+                    bVis.visible(true);
+					$('ul'+selector+'-select_head').find('select#sel-'+iCol).show();
+                }
+
+            });
+        });
+        $('.toggle-vis').on('change', function (e) {
+            e.preventDefault();
+            var iCol = $(this).val();
+            var _selector = $(this).attr('data-selector');
+            var bVis = datatable.column(iCol);
+            //var bVis = datatable.fnSettings().aoColumns[iCol].bVisible;
+            if ($(_selector + 'check_all').prop('checked') == true) {
+                $('label' + _selector + 'check_all_label span').text('Show All');
+                $(_selector + 'check_all').prop('checked', false);
+            }
+            if ($(this).prop('checked') == false) {
+                $(this).parent('li').addClass('active');
+                //datatable.fnSetColumnVis( iCol, false );
+                bVis.visible(false);
+				$('ul'+selector+'-select_head').find('select#sel-'+iCol).hide();
+            } else {
+                $(this).parent('li').removeClass('active');
+                //datatable.fnSetColumnVis( iCol, true);
+                bVis.visible(true);
+				$('ul'+selector+'-select_head').find('select#sel-'+iCol).show();
+            }
+
+        });
+		
+		// This creates another instance of DataTable but it works although it complains of 2nd instance.
+		new $.fn.datatable.FixedHeader(datatable, {});
+		
+        // End Custom JS for Show-Hide DataTable Columns
+
+
+    });
+}(jQuery));
